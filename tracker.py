@@ -1,9 +1,18 @@
 import json
 import os
+import sys
+import time
 from datetime import datetime
 
 # Path to the data file
 DB_FILE = "brews.json"
+
+# Default steep times (in seconds)
+STEEP_TIMES = {
+    "green": 120,    # 2 minutes
+    "black": 240,    # 4 minutes
+    "herbal": 300,   # 5 minutes
+}
 
 def load_brews():
     """Load existing logs from the JSON file."""
@@ -22,6 +31,29 @@ def save_brew(brew):
     with open(DB_FILE, 'w') as f:
         json.dump(brews, f, indent=4)
 
+def start_timer(tea_type_arg):
+    """Starts a countdown timer for a given tea type."""
+    tea_type = tea_type_arg.lower()
+    duration = STEEP_TIMES.get(tea_type)
+    if duration is None:
+        duration = 180
+        print(f"Unknown tea type: {tea_type_arg}. Defaulting to 3 minutes (180s).")
+    
+    print(f"Starting {tea_type_arg} timer for {duration // 60}:{duration % 60:02d}...")
+    try:
+        while duration > 0:
+            mins, secs = divmod(duration, 60)
+            timer = f"{mins:02d}:{secs:02d}"
+            print(f"\rRemaining: {timer}", end="", flush=True)
+            time.sleep(1)
+            duration -= 1
+        print("\rRemaining: 00:00")
+        print("\nBrewing complete! Enjoy your tea! 🍵")
+        # Notification sound (using terminal bell)
+        print("\a", end="", flush=True)
+    except KeyboardInterrupt:
+        print("\nTimer cancelled.")
+
 def get_input(prompt, required=True):
     """Helper to get user input with basic validation."""
     while True:
@@ -32,6 +64,13 @@ def get_input(prompt, required=True):
         return value
 
 def main():
+    if len(sys.argv) > 1:
+        command = sys.argv[1].lower()
+        if command == "brew" and len(sys.argv) > 3 and sys.argv[2].lower() == "timer":
+            tea_type = sys.argv[3]
+            start_timer(tea_type)
+            return
+
     print("--- Teatime Tracker ---")
     print("Log your latest brew!\n")
 
