@@ -4,6 +4,10 @@ beforeEach(() => {
   clearBrews();
 });
 
+test('dummy failure for TDD', () => {
+  expect(true).toBe(false);
+});
+
 test('logBrew(type, label) creates a brew entry with timestamp', () => {
   const brew = logBrew('tea', 'Earl Grey');
   expect(brew.type).toBe('tea');
