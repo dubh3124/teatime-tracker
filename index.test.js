@@ -11,3 +11,8 @@ test('subtracts 5 - 2 to equal 3', () => {
 test('multiplies 2 * 3 to equal 6', () => {
   expect(multiply(2, 3)).toBe(6);
 });
+
+test('division 6 / 2 to equal 3', () => {
+  const { divide } = require('./index');
+  expect(divide(6, 2)).toBe(3);
+});
