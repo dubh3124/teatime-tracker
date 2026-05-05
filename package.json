@@ -1,0 +1,11 @@
+{
+  "name": "teatime-tracker",
+  "version": "1.0.0",
+  "description": "Autonomous tea time tracker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no tests specified\" && exit 0"
+  },
+  "author": "",
+  "license": "ISC"
+}
