@@ -1,5 +1,10 @@
-const sum = (a, b) => a + b;
-const subtract = (a, b) => a - b;
-const multiply = (a, b) => a * b;
-const divide = (a, b) => a / b;
-module.exports = { sum, subtract, multiply, divide };
+const logBrew = (type, label) => {
+  const brew = {
+    type,
+    label,
+    timestamp: new Date().toISOString()
+  };
+  return brew;
+};
+
+module.exports = { logBrew };
