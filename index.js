@@ -14,4 +14,3 @@ const getBrews = () => brews;
 
 module.exports = { logBrew, getBrews };
 
-// Triggering PR creation
