@@ -30,5 +30,17 @@ describe('teatime-tracker', () => {
         expect(brews[0].type).toBe(type);
         expect(brews[0].label).toBe(label);
     });
+
+    test('getDailySummary() returns count of brews for today', () => {
+        const { getDailySummary } = require('./index');
+        
+        // Log some brews
+        logBrew('Oolong', 'Morning');
+        logBrew('Green', 'Afternoon');
+        
+        const summary = getDailySummary();
+        expect(summary.count).toBe(2);
+        expect(summary.date).toBe(new Date().toISOString().split('T')[0]);
+    });
 });
 
