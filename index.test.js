@@ -15,17 +15,20 @@ test('getBrews() returns all logged brews', () => {
 });
 
 test('getDailySummary() returns count of brews by type for today', () => {
-    // Clear brews for the test if possible or work with what we have
-    // For now we add specific ones and check the counts
+    // We need to ensure we are testing clean state if possible, 
+    // but the current index.js uses a global array.
+    // Let's just check if it returns the expected counts for what we add.
+    const startSummary = getDailySummary();
+    const startTea = startSummary.tea || 0;
+    const startCoffee = startSummary.coffee || 0;
+
     logBrew('tea', 'Morning Breakfast');
     logBrew('coffee', 'Espresso');
     logBrew('tea', 'Oolong');
     
     const summary = getDailySummary();
-    expect(summary).toHaveProperty('tea');
-    expect(summary).toHaveProperty('coffee');
-    expect(summary.tea).toBeGreaterThanOrEqual(2);
-    expect(summary.coffee).toBeGreaterThanOrEqual(1);
+    expect(summary.tea).toBe(startTea + 2);
+    expect(summary.coffee).toBe(startCoffee + 1);
 });
 
 
