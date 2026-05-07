@@ -28,4 +28,9 @@ test('getDailySummary() returns count of brews by type for today', () => {
     expect(summary.coffee).toBeGreaterThanOrEqual(1);
 });
 
+test('TDD Harness: version check exists', () => {
+    const { getVersion } = require('./index');
+    expect(getVersion()).toBe('1.0.0');
+});
+
 
