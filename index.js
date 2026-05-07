@@ -1,7 +1,16 @@
 let brews = [];
 
-const sum = (a, b) => a + b;
-const subtract = (a, b) => a - b;
+const logBrew = (type, label) => {
+  const brew = {
+    type,
+    label,
+    timestamp: new Date().toISOString()
+  };
+  brews.push(brew);
+  return brew;
+};
 
-module.exports = { sum, subtract };
+const getBrews = () => brews;
+
+module.exports = { logBrew, getBrews };
 
