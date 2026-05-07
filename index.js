@@ -10,24 +10,5 @@ const logBrew = (type, label) => {
   return brew;
 };
 
-const getDailySummary = () => {
-  const today = new Date().toISOString().split('T')[0];
-  const summary = { tea: 0, coffee: 0 };
-  
-  brews.forEach(brew => {
-    const brewDate = brew.timestamp.split('T')[0];
-    if (brewDate === today) {
-      if (summary.hasOwnProperty(brew.type)) {
-        summary[brew.type]++;
-      }
-    }
-  });
-  
-  return summary;
-};
+module.exports = { logBrew };
 
-const clearBrews = () => {
-  brews = [];
-};
-
-module.exports = { logBrew, getDailySummary, clearBrews };
