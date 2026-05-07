@@ -1,17 +1,7 @@
 let brews = [];
 
-const logBrew = (type, label) => {
-  const brew = {
-    type,
-    label,
-    timestamp: new Date().toISOString()
-  };
-  brews.push(brew);
-  return brew;
-};
+const sum = (a, b) => a + b;
+const subtract = (a, b) => a - b;
 
-const getBrews = () => brews;
+module.exports = { sum, subtract };
 
-module.exports = { logBrew, getBrews };
-
-// Triggering PR creation
