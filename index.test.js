@@ -1,5 +1,9 @@
-const { sum } = require('./index');
+const { logBrew } = require('./index');
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
+test('logBrew(type, label) creates a brew entry with timestamp', () => {
+    const brew = logBrew('tea', 'Earl Grey');
+    expect(brew.type).toBe('tea');
+    expect(brew.label).toBe('Earl Grey');
+    expect(brew.timestamp).toBeDefined();
+    expect(new Date(brew.timestamp).toString()).not.toBe('Invalid Date');
 });
