@@ -10,5 +10,7 @@ const logBrew = (type, label) => {
   return brew;
 };
 
-module.exports = { logBrew };
+const getBrews = () => brews;
+
+module.exports = { logBrew, getBrews };
 
