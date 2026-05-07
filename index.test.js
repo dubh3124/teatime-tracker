@@ -8,6 +8,13 @@ test('logBrew(type, label) creates a brew entry with timestamp', () => {
   expect(new Date(brew.timestamp).getTime()).toBeLessThanOrEqual(Date.now());
 });
 
+test('logBrew(type, label) includes correct timestamp format', () => {
+    const brew = logBrew('coffee', 'Espresso');
+    // ISO 8601 regex
+    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+    expect(brew.timestamp).toMatch(isoRegex);
+});
+
 test('getBrews() returns all logged brews', () => {
     const { getBrews } = require('./index');
     logBrew('tea', 'Green Tea');
