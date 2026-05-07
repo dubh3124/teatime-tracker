@@ -15,14 +15,6 @@ test('logBrew(type, label) includes correct timestamp format', () => {
     expect(brew.timestamp).toMatch(isoRegex);
 });
 
-test('FAILING_TEST: logBrew must store type and label correctly', () => {
-    // This is a dummy test to ensure we can trigger a failure if needed, 
-    // but the task is to replace toy functions.
-    // Wait, the current code already seems to have logBrew.
-    // Let's check the baseline.
-    expect(false).toBe(true);
-});
-
 test('getBrews() returns all logged brews', () => {
     const { getBrews } = require('./index');
     logBrew('tea', 'Green Tea');
