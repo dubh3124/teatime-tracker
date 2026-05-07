@@ -31,5 +31,7 @@ const getDailySummary = () => {
   return summary;
 };
 
-module.exports = { logBrew, getBrews, getDailySummary };
+const getVersion = () => '1.0.0';
+
+module.exports = { logBrew, getBrews, getDailySummary, getVersion };
 
