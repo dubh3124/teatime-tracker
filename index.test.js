@@ -8,3 +8,11 @@ test('logBrew(type, label) creates a brew entry with timestamp', () => {
   expect(new Date(brew.timestamp).getTime()).toBeLessThanOrEqual(Date.now());
 });
 
+test('getBrews() returns all logged brews', () => {
+    const { getBrews } = require('./index');
+    logBrew('tea', 'Green Tea');
+    const logs = getBrews();
+    expect(logs.length).toBeGreaterThan(0);
+    expect(logs[logs.length - 1].label).toBe('Green Tea');
+});
+
