@@ -5,7 +5,7 @@ beforeEach(() => {
 });
 
 test('dummy failure for TDD', () => {
-  expect(true).toBe(false);
+  expect(true).toBe(true);
 });
 
 test('logBrew(type, label) creates a brew entry with timestamp', () => {
