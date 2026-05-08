@@ -1,12 +1,18 @@
+const persistence = require('./persistence');
+
 let brews = [];
 
 const logBrew = (type, label) => {
+  if (type !== 'tea' && type !== 'coffee') {
+    throw new Error(`Invalid brew type: ${type}`);
+  }
   const brew = {
     type,
     label,
     timestamp: new Date().toISOString()
   };
   brews.push(brew);
+  persistence.saveBrew(brew);
   return brew;
 };
 
