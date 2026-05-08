@@ -19,22 +19,29 @@ const logBrew = (type, label) => {
 const getBrews = () => brews;
 
 const getDailySummary = () => {
+  const history = persistence.loadBrews();
   const today = new Date().toISOString().split('T')[0];
-  const summary = {
-    tea: 0,
-    coffee: 0
-  };
+  const summaryMap = {};
 
-  brews.forEach(brew => {
+  history.forEach(brew => {
     const brewDate = brew.timestamp.split('T')[0];
     if (brewDate === today) {
-      if (summary.hasOwnProperty(brew.type)) {
-        summary[brew.type]++;
-      }
+      summaryMap[brew.type] = (summaryMap[brew.type] || 0) + 1;
     }
   });
 
-  return summary;
+  const types = Object.keys(summaryMap).sort().reverse();
+  if (types.length === 0) {
+    return 'No brews recorded for today.';
+  }
+
+  return types
+    .map(type => {
+      const count = summaryMap[type];
+      const pluralType = count === 1 ? type : (type === 'coffee' ? 'coffees' : 'teas');
+      return `${count} ${pluralType}`;
+    })
+    .join(', ');
 };
 
 module.exports = { logBrew, getBrews, getDailySummary };
