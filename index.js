@@ -30,7 +30,7 @@ const getDailySummary = () => {
     }
   });
 
-  const types = Object.keys(summaryMap).sort().reverse();
+  const types = Object.keys(summaryMap).sort();
   if (types.length === 0) {
     return 'No brews recorded for today.';
   }
@@ -45,4 +45,26 @@ const getDailySummary = () => {
 };
 
 module.exports = { logBrew, getBrews, getDailySummary };
+
+if (require.main === module) {
+  const args = process.argv.slice(2);
+  const command = args[0];
+
+  if (command === 'log') {
+    const type = args[1];
+    try {
+      const brew = logBrew(type);
+      console.log(`Recorded ${brew.type} at ${brew.timestamp}`);
+    } catch (error) {
+      console.error(error.message);
+      process.exit(1);
+    }
+  } else if (command === 'summary') {
+    console.log(getDailySummary());
+  } else {
+    console.error('Usage: node index.js <log|summary> [type]');
+    process.exit(1);
+  }
+}
+
 
