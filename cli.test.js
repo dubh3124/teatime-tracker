@@ -1,13 +1,15 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 const persistence = require('./persistence');
 
 describe('CLI Integration', () => {
   const dbPath = 'brews.json';
 
   beforeEach(() => {
-    if (fs.existsSync(dbPath)) {
-      fs.unlinkSync(dbPath);
+    const fullPath = path.resolve(__dirname, dbPath);
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
     }
   });
 
