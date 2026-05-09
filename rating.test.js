@@ -11,6 +11,12 @@ describe('CLI Rating', () => {
         }
     });
 
+    afterEach(() => {
+        if (fs.existsSync(dbPath)) {
+            fs.unlinkSync(dbPath);
+        }
+    });
+
     test('rate command updates an existing brew rating', () => {
         // First, record a brew to get an ID (or just rely on the first brew in persistence)
         execSync('node index.js log tea');
