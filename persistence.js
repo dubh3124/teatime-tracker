@@ -17,6 +17,11 @@ function loadBrews(dbPath = DEFAULT_DB_PATH) {
 }
 
 function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
+  if (brew.rating !== undefined) {
+    if (typeof brew.rating !== 'number' || brew.rating < 1 || brew.rating > 5) {
+      throw new Error('Rating must be between 1 and 5');
+    }
+  }
   const brews = loadBrews(dbPath);
   brews.push(brew);
   try {
