@@ -32,10 +32,9 @@ function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
 }
 
 function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
-  const starsFloat = parseFloat(rating);
   const stars = parseInt(rating, 10);
   
-  if (isNaN(stars) || stars !== starsFloat || stars < 1 || stars > 5) {
+  if (isNaN(stars) || stars.toString() !== rating.toString() || stars < 1 || stars > 5) {
     throw new Error('Rating must be an integer between 1 and 5');
   }
   const brews = loadBrews(dbPath);
