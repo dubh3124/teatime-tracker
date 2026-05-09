@@ -2,10 +2,8 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const persistence = require('./persistence');
 
-const path = require('path');
-
 describe('CLI Rating', () => {
-    const dbPath = path.join(__dirname, 'brews.json');
+    const dbPath = 'brews.json';
 
     beforeEach(() => {
         if (fs.existsSync(dbPath)) {

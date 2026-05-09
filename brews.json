@@ -1,14 +1,32 @@
 [
   {
     "type": "tea",
-    "timestamp": "2026-05-09T09:31:01.015Z"
+    "label": "Earl Grey",
+    "timestamp": "2023-10-01T10:00:00.000Z"
+  },
+  {
+    "type": "tea",
+    "label": "Earl Grey",
+    "timestamp": "2026-05-09T09:31:51.284Z"
+  },
+  {
+    "type": "tea",
+    "label": "Green Tea",
+    "timestamp": "2026-05-09T09:31:51.285Z"
+  },
+  {
+    "type": "tea",
+    "label": "Morning Breakfast",
+    "timestamp": "2026-05-09T09:31:51.285Z"
   },
   {
     "type": "coffee",
-    "timestamp": "2026-05-09T09:31:01.045Z"
+    "label": "Espresso",
+    "timestamp": "2026-05-09T09:31:51.286Z"
   },
   {
-    "type": "coffee",
-    "timestamp": "2026-05-09T09:31:01.068Z"
+    "type": "tea",
+    "label": "Oolong",
+    "timestamp": "2026-05-09T09:31:51.286Z"
   }
 ]
