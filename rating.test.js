@@ -19,22 +19,35 @@ describe('CLI Rating', () => {
 
         // Rate the brew
         const output = execSync(`node index.js rate "${brewId}" 5`).toString();
-        expect(output).toContain(`Rated brew ${brewId} as 5 stars`);
+        expect(output).toContain(`Successfully rated brew ${brewId} with 5 stars`);
 
         const brewsAfter = persistence.loadBrews();
         expect(brewsAfter[0].rating).toBe(5);
     });
 
-    test('rate command validates integer rating', () => {
+    test('rate command validates integer rating (must be an integer)', () => {
         execSync('node index.js log tea');
         const brewsBefore = persistence.loadBrews();
         const brewId = brewsBefore[0].timestamp;
 
         try {
-            execSync(`node index.js rate "${brewId}" abc`, { stdio: 'pipe' });
+            execSync(`node index.js rate "${brewId}" 4.5`, { stdio: 'pipe' });
             throw new Error('Should have failed for non-integer rating');
         } catch (error) {
-            expect(error.stderr.toString()).toContain('Rating must be between 1 and 5');
+            expect(error.stderr.toString()).toContain('Rating must be an integer between 1 and 5');
+        }
+    });
+
+    test('rate command validates range (not too high)', () => {
+        execSync('node index.js log tea');
+        const brewsBefore = persistence.loadBrews();
+        const brewId = brewsBefore[0].timestamp;
+
+        try {
+            execSync(`node index.js rate "${brewId}" 6`, { stdio: 'pipe' });
+            throw new Error('Should have failed for rating > 5');
+        } catch (error) {
+            expect(error.stderr.toString()).toContain('Rating must be an integer between 1 and 5');
         }
     });
 
