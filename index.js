@@ -105,7 +105,7 @@ if (require.main === module) {
         Timestamp: brew.timestamp,
         Type: brew.type,
         Label: brew.label || '-',
-        Rating: brew.rating || '-'
+        Rating: brew.rating !== undefined ? brew.rating : '-'
       }));
       console.table(tableData);
     }
