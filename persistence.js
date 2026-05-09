@@ -18,8 +18,8 @@ function loadBrews(dbPath = DEFAULT_DB_PATH) {
 
 function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
   if (brew.rating !== undefined) {
-    if (typeof brew.rating !== 'number' || brew.rating < 1 || brew.rating > 5) {
-      throw new Error('Rating must be between 1 and 5');
+    if (typeof brew.rating !== 'number' || !Number.isInteger(brew.rating) || brew.rating < 1 || brew.rating > 5) {
+      throw new Error('Rating must be an integer between 1 and 5');
     }
   }
   const brews = loadBrews(dbPath);
@@ -32,9 +32,11 @@ function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
 }
 
 function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
+  const starsFloat = parseFloat(rating);
   const stars = parseInt(rating, 10);
-  if (isNaN(stars) || stars < 1 || stars > 5) {
-    throw new Error('Rating must be between 1 and 5');
+  
+  if (isNaN(stars) || stars !== starsFloat || stars < 1 || stars > 5) {
+    throw new Error('Rating must be an integer between 1 and 5');
   }
   const brews = loadBrews(dbPath);
   const index = brews.findIndex(b => b.timestamp === id);

@@ -74,7 +74,7 @@ if (require.main === module) {
     }
     try {
       const brew = updateBrewRating(id, stars);
-      console.log(`Rated brew ${id} as ${brew.rating} stars`);
+      console.log(`Successfully rated brew ${id} with ${brew.rating} stars`);
     } catch (error) {
       console.error(error.message);
       process.exit(1);
