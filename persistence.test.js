@@ -41,4 +41,21 @@ describe('Persistence Layer', () => {
     expect(brews).toHaveLength(2);
     expect(brews).toEqual([brew1, brew2]);
   });
+
+  test('should save and retrieve rating field', () => {
+    const brew = { type: 'Earl Grey', timestamp: new Date().toISOString(), rating: 5 };
+    saveBrew(brew, testDbPath);
+    const brews = loadBrews(testDbPath);
+    expect(brews[0].rating).toBe(5);
+  });
+
+  test('should throw error for ratings outside 1-5 range', () => {
+    const brewLow = { type: 'Earl Grey', timestamp: new Date().toISOString(), rating: 0 };
+    const brewHigh = { type: 'Earl Grey', timestamp: new Date().toISOString(), rating: 6 };
+    const brewInvalid = { type: 'Earl Grey', timestamp: new Date().toISOString(), rating: 'invalid' };
+
+    expect(() => saveBrew(brewLow, testDbPath)).toThrow('Rating must be between 1 and 5');
+    expect(() => saveBrew(brewHigh, testDbPath)).toThrow('Rating must be between 1 and 5');
+    expect(() => saveBrew(brewInvalid, testDbPath)).toThrow('Rating must be between 1 and 5');
+  });
 });
