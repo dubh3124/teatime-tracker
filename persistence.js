@@ -1,9 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const DEFAULT_DB_PATH = path.join(__dirname, 'brews.json');
+const DEFAULT_DB_PATH = path.resolve(__dirname, 'brews.json');
 
-function loadBrews(dbPath = DEFAULT_DB_PATH) {
+function getDbPath() {
+  return process.env.BREW_DB || DEFAULT_DB_PATH;
+}
+
+function loadBrews(dbPath) {
+  dbPath = dbPath || getDbPath();
   if (!fs.existsSync(dbPath)) {
     return [];
   }
@@ -16,7 +21,8 @@ function loadBrews(dbPath = DEFAULT_DB_PATH) {
   }
 }
 
-function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
+function saveBrew(brew, dbPath) {
+  dbPath = dbPath || getDbPath();
   if (brew.rating !== undefined) {
     if (typeof brew.rating !== 'number' || !Number.isInteger(brew.rating) || brew.rating < 1 || brew.rating > 5) {
       throw new Error('Rating must be an integer between 1 and 5');
@@ -31,7 +37,8 @@ function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
   }
 }
 
-function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
+function updateBrewRating(id, rating, dbPath) {
+  dbPath = dbPath || getDbPath();
   const stars = parseInt(rating, 10);
   
   if (isNaN(stars) || stars.toString() !== rating.toString() || stars < 1 || stars > 5) {
@@ -52,7 +59,8 @@ function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
   }
 }
 
-function searchHistory(filters = {}, dbPath = DEFAULT_DB_PATH) {
+function searchHistory(filters = {}, dbPath) {
+  dbPath = dbPath || getDbPath();
   const brews = loadBrews(dbPath);
   return brews.filter(brew => {
     if (filters.startDate && brew.timestamp < filters.startDate) return false;

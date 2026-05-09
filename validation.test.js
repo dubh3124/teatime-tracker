@@ -1,18 +1,19 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
+const os = require('os');
 
 describe('CLI Input Validation', () => {
-    const dbPath = 'brews.json';
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'teatime-validation-'));
+    const dbPath = path.join(tmpDir, 'brews.json');
 
-    beforeEach(() => {
-        if (fs.existsSync(dbPath)) {
-            fs.unlinkSync(dbPath);
-        }
+    afterAll(() => {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
     });
 
     test('rate command requires both id and stars', () => {
         try {
-            execSync('node index.js rate "some-id"', { stdio: 'pipe' });
+            execSync(`BREW_DB=${dbPath} node index.js rate "some-id"`, { stdio: 'pipe' });
             throw new Error('Should have failed for missing stars');
         } catch (error) {
             expect(error.stderr.toString()).toContain('Usage: node index.js rate <id> <stars>');
@@ -20,16 +21,14 @@ describe('CLI Input Validation', () => {
     });
 
     test('rate command validates stars is a number', () => {
-        execSync('node index.js log tea');
+        execSync(`BREW_DB=${dbPath} node index.js log tea`);
         const data = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
         const brewId = data[0].timestamp;
 
         try {
-            execSync(`node index.js rate "${brewId}" 4.5`, { stdio: 'pipe' });
-            // Note: Current implementation uses parseInt which makes 4.5 into 4. 
-            // If we strictly want integers, we should check this.
+            execSync(`BREW_DB=${dbPath} node index.js rate "${brewId}" 4.5`, { stdio: 'pipe' });
         } catch (error) {
-            // Placeholder
+            // parseInt behavior: 4.5 becomes 4
         }
     });
 });

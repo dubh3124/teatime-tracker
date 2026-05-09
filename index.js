@@ -1,7 +1,5 @@
 const persistence = require('./persistence');
 
-let brews = [];
-
 const logBrew = (type, label, rating) => {
   if (type !== 'tea' && type !== 'coffee') {
     throw new Error(`Invalid brew type: ${type}`);
@@ -18,12 +16,11 @@ const logBrew = (type, label, rating) => {
     }
     brew.rating = stars;
   }
-  brews.push(brew);
   persistence.saveBrew(brew);
   return brew;
 };
 
-const getBrews = () => brews;
+const getBrews = () => persistence.loadBrews();
 
 const getDailySummary = () => {
   const history = persistence.getHistory();
@@ -91,12 +88,12 @@ if (require.main === module) {
       console.error(error.message);
       process.exit(1);
     }
-  } else if (command === 'search') {
+  } else if (command === 'search' || command === 'history') {
     const filters = {};
     for (let i = 1; i < args.length; i++) {
       const arg = args[i];
-      if (arg.startsWith('--start-date=')) filters.startDate = arg.split('=')[1];
-      else if (arg.startsWith('--end-date=')) filters.endDate = arg.split('=')[1];
+      if (arg.startsWith('--start-date=') || arg.startsWith('--from=')) filters.startDate = arg.split('=')[1];
+      else if (arg.startsWith('--end-date=') || arg.startsWith('--to=')) filters.endDate = arg.split('=')[1];
       else if (arg.startsWith('--type=')) filters.type = arg.split('=')[1];
       else if (arg.startsWith('--query=')) filters.query = arg.split('=')[1];
     }
@@ -104,12 +101,13 @@ if (require.main === module) {
     if (results.length === 0) {
       console.log('No brews found matching criteria.');
     } else {
+      console.log('Results:');
       results.forEach(brew => {
-        console.log(`[${brew.timestamp}] ${brew.type}${brew.label ? `: ${brew.label}` : ''}${brew.rating ? ` (${brew.rating} stars)` : ''}`);
+        console.log(`[${brew.timestamp}] ${brew.type} (Rating: ${brew.rating !== undefined ? brew.rating : '-'}): ${brew.label || '-'}`);
       });
     }
   } else {
-    console.error('Usage: node index.js <log|summary|rate|search> [args]');
+    console.error('Usage: node index.js <log|summary|rate|search|history> [args]');
     process.exit(1);
   }
 }
