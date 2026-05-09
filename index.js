@@ -1,7 +1,5 @@
 const persistence = require('./persistence');
 
-let brews = [];
-
 const logBrew = (type, label, rating) => {
   if (type !== 'tea' && type !== 'coffee') {
     throw new Error(`Invalid brew type: ${type}`);
@@ -18,12 +16,11 @@ const logBrew = (type, label, rating) => {
     }
     brew.rating = stars;
   }
-  brews.push(brew);
   persistence.saveBrew(brew);
   return brew;
 };
 
-const getBrews = () => brews;
+const getBrews = () => persistence.loadBrews();
 
 const getDailySummary = () => {
   const history = persistence.getHistory();
