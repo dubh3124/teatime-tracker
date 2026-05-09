@@ -3,9 +3,15 @@ const fs = require('fs');
 const persistence = require('./persistence');
 
 describe('CLI Rating', () => {
+    const dbPath = 'brews.json';
+
+    beforeEach(() => {
+        if (fs.existsSync(dbPath)) {
+            fs.unlinkSync(dbPath);
+        }
+    });
+
     test('rate command updates an existing brew rating', () => {
-        const dbPathForTest = 'brews.json';
-        if (fs.existsSync(dbPathForTest)) fs.unlinkSync(dbPathForTest);
 
         // First, record a brew to get an ID
         execSync('node index.js log tea');
@@ -18,8 +24,6 @@ describe('CLI Rating', () => {
 
         const brewsAfter = persistence.loadBrews();
         expect(brewsAfter[brewsAfter.length - 1].rating).toBe(5);
-        
-        if (fs.existsSync(dbPathForTest)) fs.unlinkSync(dbPathForTest);
     });
 
     test('rate command validates integer rating (must be an integer)', () => {
