@@ -19,7 +19,7 @@ const logBrew = (type, label) => {
 const getBrews = () => brews;
 
 const getDailySummary = () => {
-  const history = persistence.loadBrews();
+  const history = persistence.getHistory();
   const today = new Date().toISOString().split('T')[0];
   const summaryMap = {};
 
@@ -44,7 +44,11 @@ const getDailySummary = () => {
     .join(', ');
 };
 
-module.exports = { logBrew, getBrews, getDailySummary };
+const updateBrewRating = (id, rating) => {
+  return persistence.updateBrewRating(id, rating);
+};
+
+module.exports = { logBrew, getBrews, getDailySummary, updateBrewRating };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
@@ -61,8 +65,18 @@ if (require.main === module) {
     }
   } else if (command === 'summary') {
     console.log(getDailySummary());
+  } else if (command === 'rate') {
+    const id = args[1];
+    const stars = args[2];
+    try {
+      const brew = updateBrewRating(id, stars);
+      console.log(`Rated brew ${id} as ${brew.rating} stars`);
+    } catch (error) {
+      console.error(error.message);
+      process.exit(1);
+    }
   } else {
-    console.error('Usage: node index.js <log|summary> [type]');
+    console.error('Usage: node index.js <log|summary|rate> [args]');
     process.exit(1);
   }
 }

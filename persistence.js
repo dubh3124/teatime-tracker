@@ -31,7 +31,29 @@ function saveBrew(brew, dbPath = DEFAULT_DB_PATH) {
   }
 }
 
+function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
+  const stars = parseInt(rating, 10);
+  if (isNaN(stars) || stars < 1 || stars > 5) {
+    throw new Error('Rating must be between 1 and 5');
+  }
+  const brews = loadBrews(dbPath);
+  const index = brews.findIndex(b => b.timestamp === id);
+  if (index === -1) {
+    throw new Error(`Brew with ID ${id} not found`);
+  }
+  brews[index].rating = stars;
+  try {
+    fs.writeFileSync(dbPath, JSON.stringify(brews, null, 2), 'utf8');
+    return brews[index];
+  } catch (error) {
+    console.error('Error updating brew:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   loadBrews,
-  saveBrew
+  getHistory: loadBrews,
+  saveBrew,
+  updateBrewRating
 };
