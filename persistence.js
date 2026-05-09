@@ -54,8 +54,6 @@ function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
 
 function searchHistory(filters = {}, dbPath = DEFAULT_DB_PATH) {
   const brews = loadBrews(dbPath);
-  console.error(`DEBUG: searchHistory called with filters: ${JSON.stringify(filters)}`);
-  console.error(`DEBUG: Loaded ${brews.length} brews`);
   return brews.filter(brew => {
     if (filters.startDate && brew.timestamp < filters.startDate) return false;
     if (filters.endDate && brew.timestamp > filters.endDate) return false;
