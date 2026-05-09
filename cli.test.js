@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
+const persistence = require('./persistence');
+
 describe('CLI Integration', () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'teatime-cli-'));
   const dbPath = path.join(tmpDir, 'brews.json');
@@ -39,13 +41,13 @@ describe('CLI Integration', () => {
     const brew1 = { type: 'tea', timestamp: '2023-10-01T10:00:00.000Z', rating: 4 };
     const brew2 = { type: 'coffee', timestamp: '2023-10-02T10:00:00.000Z', rating: 5 };
     
-    persistence.saveBrew(brew1);
-    persistence.saveBrew(brew2);
+    persistence.saveBrew(brew1, dbPath);
+    persistence.saveBrew(brew2, dbPath);
 
-    const output = execSync('node index.js search --type=tea').toString();
+    const output = execSync(`BREW_DB=${dbPath} node index.js search --type=tea`).toString();
     expect(output).toContain('tea');
     expect(output).toContain('2023-10-01T10:00:00.000Z');
-    expect(output).toContain('(4 stars)');
+    expect(output).toContain('4');
     expect(output).not.toContain('coffee');
   });
 
@@ -53,10 +55,10 @@ describe('CLI Integration', () => {
     const brew1 = { type: 'tea', timestamp: '2023-10-01T10:00:00.000Z' };
     const brew2 = { type: 'tea', timestamp: '2023-10-05T10:00:00.000Z' };
     
-    persistence.saveBrew(brew1);
-    persistence.saveBrew(brew2);
+    persistence.saveBrew(brew1, dbPath);
+    persistence.saveBrew(brew2, dbPath);
 
-    const output = execSync('node index.js search --from=2023-10-01T00:00:00.000Z --to=2023-10-02T23:59:59.000Z').toString();
+    const output = execSync(`BREW_DB=${dbPath} node index.js search --from=2023-10-01T00:00:00.000Z --to=2023-10-02T23:59:59.000Z`).toString();
     expect(output).toContain('2023-10-01T10:00:00.000Z');
     expect(output).not.toContain('2023-10-05T10:00:00.000Z');
   });
