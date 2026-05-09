@@ -2,7 +2,7 @@ const persistence = require('./persistence');
 
 let brews = [];
 
-const logBrew = (type, label) => {
+const logBrew = (type, label, rating) => {
   if (type !== 'tea' && type !== 'coffee') {
     throw new Error(`Invalid brew type: ${type}`);
   }
@@ -11,6 +11,14 @@ const logBrew = (type, label) => {
     label,
     timestamp: new Date().toISOString()
   };
+  if (rating !== undefined) {
+    // Validate rating - persistence.saveBrew might do it too, but let's be safe
+    const r = Number(rating);
+    if (!Number.isInteger(r) || r < 1 || r > 5) {
+      throw new Error('Rating must be an integer between 1 and 5');
+    }
+    brew.rating = r;
+  }
   brews.push(brew);
   persistence.saveBrew(brew);
   return brew;
@@ -56,8 +64,15 @@ if (require.main === module) {
 
   if (command === 'log') {
     const type = args[1];
+    let rating;
+    args.slice(2).forEach(arg => {
+      if (arg.startsWith('--rating=')) {
+        rating = arg.split('=')[1];
+      }
+    });
+
     try {
-      const brew = logBrew(type);
+      const brew = logBrew(type, undefined, rating);
       console.log(`Recorded ${brew.type} at ${brew.timestamp}`);
     } catch (error) {
       console.error(error.message);

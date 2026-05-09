@@ -56,4 +56,26 @@ describe('CLI Rating', () => {
             expect(error.stderr.toString()).toContain('Brew with ID non-existent-id not found');
         }
     });
+
+    test('should allow rating at the time of recording', () => {
+        const type = 'coffee';
+        const rating = 5;
+        const output = execSync(`node index.js log ${type} --rating=${rating}`).toString();
+        expect(output).toContain(`Recorded ${type}`);
+        
+        // Verify it was saved with the rating
+        const history = persistence.loadBrews();
+        const lastBrew = history[history.length - 1];
+        expect(lastBrew.type).toBe(type);
+        expect(lastBrew.rating).toBe(rating);
+    });
+
+    test('should reject invalid rating at the time of recording', () => {
+        try {
+            execSync('node index.js log tea --rating=6', { stdio: 'pipe' });
+            throw new Error('Should have thrown an error');
+        } catch (error) {
+            expect(error.stderr.toString()).toContain('Rating must be an integer between 1 and 5');
+        }
+    });
 });
