@@ -13,18 +13,24 @@ describe('Brew Rating Integration during Recording', () => {
         const brew = logBrew('tea', undefined, rating);
         expect(brew.type).toBe('tea');
         expect(brew.rating).toBe(5);
-        expect(persistence.saveBrew).toHaveBeenCalledWith(expect.objectContaining({
-            type: 'tea',
-            rating: 5
-        }));
+        expect(persistence.saveBrew).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'tea',
+                rating: 5
+            }),
+            expect.any(String)
+        );
     });
 
     test('should NOT include rating if not provided during recording', () => {
         const brew = logBrew('coffee');
         expect(brew.type).toBe('coffee');
         expect(brew.rating).toBeUndefined();
-        expect(persistence.saveBrew).toHaveBeenCalledWith(expect.not.objectContaining({
-            rating: expect.anything()
-        }));
+        expect(persistence.saveBrew).toHaveBeenCalledWith(
+            expect.not.objectContaining({
+                rating: expect.anything()
+            }),
+            expect.any(String)
+        );
     });
 });

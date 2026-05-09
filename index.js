@@ -1,6 +1,8 @@
+const path = require('path');
 const persistence = require('./persistence');
 
-let brews = [];
+const DEFAULT_DB_PATH = path.join(__dirname, 'brews.json');
+const getDbPath = () => process.env.BREW_DB || DEFAULT_DB_PATH;
 
 const logBrew = (type, label, rating) => {
   if (type !== 'tea' && type !== 'coffee') {
@@ -18,15 +20,14 @@ const logBrew = (type, label, rating) => {
     }
     brew.rating = stars;
   }
-  brews.push(brew);
-  persistence.saveBrew(brew);
+  persistence.saveBrew(brew, getDbPath());
   return brew;
 };
 
-const getBrews = () => brews;
+const getBrews = () => persistence.loadBrews(getDbPath());
 
 const getDailySummary = () => {
-  const history = persistence.getHistory();
+  const history = persistence.getHistory(getDbPath());
   const today = new Date().toISOString().split('T')[0];
   const summaryMap = {};
 
@@ -52,11 +53,11 @@ const getDailySummary = () => {
 };
 
 const updateBrewRating = (id, rating) => {
-  return persistence.updateBrewRating(id, rating);
+  return persistence.updateBrewRating(id, rating, getDbPath());
 };
 
 const searchHistory = (filters) => {
-  return persistence.searchHistory(filters);
+  return persistence.searchHistory(filters, getDbPath());
 };
 
 module.exports = { logBrew, getBrews, getDailySummary, updateBrewRating, searchHistory };

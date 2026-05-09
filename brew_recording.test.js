@@ -17,10 +17,13 @@ describe('Brew Entry Recording Logic', () => {
 
     test('should pass recorded brew to persistence layer', () => {
         const brew = logBrew('coffee');
-        expect(persistence.saveBrew).toHaveBeenCalledWith(expect.objectContaining({
-            type: 'coffee',
-            timestamp: expect.any(String)
-        }));
+        expect(persistence.saveBrew).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'coffee',
+                timestamp: expect.any(String)
+            }),
+            expect.any(String)
+        );
     });
 
     test('should throw error for invalid brew type', () => {
