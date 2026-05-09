@@ -20,13 +20,21 @@ describe('Search CLI Command Integration', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  test('search command supports --from, --to, --type and displays table', () => {
-    const output = execSync(`BREW_DB=${dbPath} node index.js search --from=2023-01-01 --to=2023-01-01T23:59:59 --type=tea`).toString();
+  test('history command supports --from, --to, --type and displays table', () => {
+    const output = execSync(`BREW_DB=${dbPath} node index.js history --from=2023-01-01 --to=2023-01-01T23:59:59 --type=tea`).toString();
 
     expect(output).toContain('tea');
     expect(output).toContain('Green Tea');
     expect(output).toContain('5');
     expect(output).not.toContain('Espresso');
     expect(output).not.toContain('Oolong');
+  });
+
+  test('search command (alias for history) supports flags', () => {
+    const output = execSync(`BREW_DB=${dbPath} node index.js search --from=2023-01-01 --to=2023-01-01T23:59:59 --type=tea`).toString();
+
+    expect(output).toContain('tea');
+    expect(output).toContain('Green Tea');
+    expect(output).toContain('5');
   });
 });
