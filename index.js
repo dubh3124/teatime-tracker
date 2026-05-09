@@ -55,7 +55,11 @@ const updateBrewRating = (id, rating) => {
   return persistence.updateBrewRating(id, rating);
 };
 
-module.exports = { logBrew, getBrews, getDailySummary, updateBrewRating };
+const searchHistory = (filters) => {
+  return persistence.searchHistory(filters);
+};
+
+module.exports = { logBrew, getBrews, getDailySummary, updateBrewRating, searchHistory };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
@@ -87,8 +91,25 @@ if (require.main === module) {
       console.error(error.message);
       process.exit(1);
     }
+  } else if (command === 'search') {
+    const filters = {};
+    for (let i = 1; i < args.length; i++) {
+      const arg = args[i];
+      if (arg.startsWith('--start-date=')) filters.startDate = arg.split('=')[1];
+      else if (arg.startsWith('--end-date=')) filters.endDate = arg.split('=')[1];
+      else if (arg.startsWith('--type=')) filters.type = arg.split('=')[1];
+      else if (arg.startsWith('--query=')) filters.query = arg.split('=')[1];
+    }
+    const results = searchHistory(filters);
+    if (results.length === 0) {
+      console.log('No brews found matching criteria.');
+    } else {
+      results.forEach(brew => {
+        console.log(`[${brew.timestamp}] ${brew.type}${brew.label ? `: ${brew.label}` : ''}${brew.rating ? ` (${brew.rating} stars)` : ''}`);
+      });
+    }
   } else {
-    console.error('Usage: node index.js <log|summary|rate> [args]');
+    console.error('Usage: node index.js <log|summary|rate|search> [args]');
     process.exit(1);
   }
 }

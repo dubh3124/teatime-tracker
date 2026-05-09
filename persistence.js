@@ -52,9 +52,24 @@ function updateBrewRating(id, rating, dbPath = DEFAULT_DB_PATH) {
   }
 }
 
+function searchHistory(filters = {}, dbPath = DEFAULT_DB_PATH) {
+  const brews = loadBrews(dbPath);
+  return brews.filter(brew => {
+    if (filters.startDate && brew.timestamp < filters.startDate) return false;
+    if (filters.endDate && brew.timestamp > filters.endDate) return false;
+    if (filters.type && brew.type !== filters.type) return false;
+    if (filters.query) {
+      const label = brew.label || '';
+      if (!label.toLowerCase().includes(filters.query.toLowerCase())) return false;
+    }
+    return true;
+  });
+}
+
 module.exports = {
   loadBrews,
   getHistory: loadBrews,
   saveBrew,
-  updateBrewRating
+  updateBrewRating,
+  searchHistory
 };
