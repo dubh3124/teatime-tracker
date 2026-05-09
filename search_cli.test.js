@@ -24,9 +24,7 @@ describe('Search CLI Command Integration', () => {
   });
 
   test('search command supports --from, --to, --type and displays table', () => {
-    // Current implementation uses --start-date, --end-date and line-based output.
-    // This test expects --from, --to and a table-like structure containing 'Rating'.
-    const output = execSync('node index.js search --from=2023-01-01 --to=2023-01-02 --type=tea').toString();
+    const output = execSync('node index.js search --from=2023-01-01 --to=2023-01-01T23:59:59 --type=tea').toString();
     
     expect(output).toContain('tea');
     expect(output).toContain('Green Tea');
