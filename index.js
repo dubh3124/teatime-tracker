@@ -88,7 +88,7 @@ if (require.main === module) {
       console.error(error.message);
       process.exit(1);
     }
-  } else if (command === 'search') {
+  } else if (command === 'search' || command === 'history') {
     const filters = {};
     for (let i = 1; i < args.length; i++) {
       const arg = args[i];
@@ -107,7 +107,7 @@ if (require.main === module) {
       });
     }
   } else {
-    console.error('Usage: node index.js <log|summary|rate|search> [args]');
+    console.error('Usage: node index.js <log|summary|rate|search|history> [args]');
     process.exit(1);
   }
 }
