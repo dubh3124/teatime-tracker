@@ -2,26 +2,6 @@
   {
     "type": "tea",
     "label": "Earl Grey",
-    "timestamp": "2026-05-09T09:28:02.639Z"
-  },
-  {
-    "type": "tea",
-    "label": "Green Tea",
-    "timestamp": "2026-05-09T09:28:02.640Z"
-  },
-  {
-    "type": "tea",
-    "label": "Morning Breakfast",
-    "timestamp": "2026-05-09T09:28:02.640Z"
-  },
-  {
-    "type": "coffee",
-    "label": "Espresso",
-    "timestamp": "2026-05-09T09:28:02.640Z"
-  },
-  {
-    "type": "tea",
-    "label": "Oolong",
-    "timestamp": "2026-05-09T09:28:02.641Z"
+    "timestamp": "2023-10-01T10:00:00.000Z"
   }
 ]

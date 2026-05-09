@@ -3,7 +3,7 @@ const fs = require('fs');
 const persistence = require('./persistence');
 
 describe('CLI Integration', () => {
-  const dbPath = './brews.json';
+  const dbPath = 'brews.json';
 
   beforeEach(() => {
     if (fs.existsSync(dbPath)) {
@@ -15,7 +15,7 @@ describe('CLI Integration', () => {
     const output = execSync('node index.js log tea').toString();
     expect(output).toContain('Recorded tea');
     
-    const brews = persistence.loadBrews(dbPath);
+    const brews = persistence.loadBrews();
     expect(brews.length).toBe(1);
     expect(brews[0].type).toBe('tea');
   });

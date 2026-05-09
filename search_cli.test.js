@@ -2,7 +2,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 
 describe('Search CLI Command Integration', () => {
-  const dbPath = './brews.json';
+  const dbPath = 'brews.json';
 
   beforeEach(() => {
     if (fs.existsSync(dbPath)) {

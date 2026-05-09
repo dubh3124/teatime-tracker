@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const DEFAULT_DB_PATH = path.join(__dirname, 'brews.json');
+const DEFAULT_DB_PATH = path.resolve(process.cwd(), 'brews.json');
 
 function loadBrews(dbPath = DEFAULT_DB_PATH) {
   if (!fs.existsSync(dbPath)) {
