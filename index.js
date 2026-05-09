@@ -1,5 +1,7 @@
 const persistence = require('./persistence');
 
+let brews = [];
+
 const logBrew = (type, label, rating) => {
   if (type !== 'tea' && type !== 'coffee') {
     throw new Error(`Invalid brew type: ${type}`);
@@ -16,11 +18,12 @@ const logBrew = (type, label, rating) => {
     }
     brew.rating = stars;
   }
+  brews.push(brew);
   persistence.saveBrew(brew);
   return brew;
 };
 
-const getBrews = () => persistence.loadBrews();
+const getBrews = () => brews;
 
 const getDailySummary = () => {
   const history = persistence.getHistory();
@@ -91,23 +94,28 @@ if (require.main === module) {
   } else if (command === 'search' || command === 'history') {
     const filters = {};
     for (let i = 1; i < args.length; i++) {
-      const arg = args[i];
-      if (arg.startsWith('--start-date=') || arg.startsWith('--from=')) filters.startDate = arg.split('=')[1];
-      else if (arg.startsWith('--end-date=') || arg.startsWith('--to=')) filters.endDate = arg.split('=')[1];
-      else if (arg.startsWith('--type=')) filters.type = arg.split('=')[1];
-      else if (arg.startsWith('--query=')) filters.query = arg.split('=')[1];
+        const arg = args[i];
+        if (arg.startsWith('--start-date=') || arg.startsWith('--from=')) filters.startDate = arg.split('=')[1];
+        else if (arg.startsWith('--end-date=') || arg.startsWith('--to=')) filters.endDate = arg.split('=')[1];
+        else if (arg.startsWith('--type=')) filters.type = arg.split('=')[1];
+        else if (arg.startsWith('--query=')) filters.query = arg.split('=')[1];
     }
     const results = searchHistory(filters);
     if (results.length === 0) {
       console.log('No brews found matching criteria.');
     } else {
-      console.log('Results:');
+      console.log('Timestamp                    | Type   | Label           | Rating');
+      console.log('-----------------------------|--------|-----------------|-------');
       results.forEach(brew => {
-        console.log(`[${brew.timestamp}] ${brew.type} (Rating: ${brew.rating !== undefined ? brew.rating : '-'}): ${brew.label || '-'}`);
+        const timestamp = brew.timestamp.padEnd(28);
+        const type = brew.type.padEnd(6);
+        const label = (brew.label || '').padEnd(15);
+        const rating = brew.rating ? brew.rating.toString().padStart(6) : '    - ';
+        console.log(`${timestamp} | ${type} | ${label} | ${rating}`);
       });
     }
   } else {
-    console.error('Usage: node index.js <log|summary|rate|search|history> [args]');
+    console.error('Usage: node index.js <log|summary|rate|history|search> [args]');
     process.exit(1);
   }
 }
