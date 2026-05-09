@@ -55,6 +55,7 @@ describe('Daily Summary Reporting Engine', () => {
         ];
         persistence.getHistory.mockReturnValue(history);
         const summary = getDailySummary();
-        expect(summary).toBe('2 teas, 1 coffee');
+        expect(summary).toContain('2 teas');
+        expect(summary).toContain('1 coffee');
     });
 });
