@@ -15,20 +15,20 @@ describe('CLI Rating', () => {
         // First, record a brew to get an ID (or just rely on the first brew in persistence)
         execSync('node index.js log tea');
         const brewsBefore = persistence.loadBrews();
-        const brewId = brewsBefore[0].timestamp; // Using timestamp as ID for now based on current structure
+        const brewId = brewsBefore[brewsBefore.length - 1].timestamp;
 
         // Rate the brew
         const output = execSync(`node index.js rate "${brewId}" 5`).toString();
         expect(output).toContain(`Successfully rated brew ${brewId} with 5 stars`);
 
         const brewsAfter = persistence.loadBrews();
-        expect(brewsAfter[0].rating).toBe(5);
+        expect(brewsAfter[brewsAfter.length - 1].rating).toBe(5);
     });
 
     test('rate command validates integer rating (must be an integer)', () => {
         execSync('node index.js log tea');
         const brewsBefore = persistence.loadBrews();
-        const brewId = brewsBefore[0].timestamp;
+        const brewId = brewsBefore[brewsBefore.length - 1].timestamp;
 
         try {
             execSync(`node index.js rate "${brewId}" 4.5`, { stdio: 'pipe' });
@@ -41,7 +41,7 @@ describe('CLI Rating', () => {
     test('rate command validates range (not too high)', () => {
         execSync('node index.js log tea');
         const brewsBefore = persistence.loadBrews();
-        const brewId = brewsBefore[0].timestamp;
+        const brewId = brewsBefore[brewsBefore.length - 1].timestamp;
 
         try {
             execSync(`node index.js rate "${brewId}" 6`, { stdio: 'pipe' });
