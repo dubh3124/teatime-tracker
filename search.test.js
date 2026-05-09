@@ -66,7 +66,7 @@ describe('Persistence Layer Search', () => {
 });
 
 describe('End-to-End Search Logic', () => {
-  const testDbPath = path.join(__dirname, 'brews.json'); 
+  const testDbPath = path.join(__dirname, 'test-e2e-brews.json');
 
   const brew1 = { type: 'tea', label: 'Earl Grey', timestamp: '2023-10-01T10:00:00.000Z' };
 
@@ -75,6 +75,14 @@ describe('End-to-End Search Logic', () => {
       fs.unlinkSync(testDbPath);
     }
     saveBrew(brew1, testDbPath);
+    process.env.BREW_DB = testDbPath;
+  });
+
+  afterEach(() => {
+    delete process.env.BREW_DB;
+    if (fs.existsSync(testDbPath)) {
+      fs.unlinkSync(testDbPath);
+    }
   });
 
   test('should integrate with index.js searchHistory', () => {
