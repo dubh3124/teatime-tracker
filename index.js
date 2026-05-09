@@ -101,13 +101,12 @@ if (require.main === module) {
     if (results.length === 0) {
       console.log('No brews found matching criteria.');
     } else {
-      const tableData = results.map(brew => ({
+      console.table(results.map(brew => ({
         Timestamp: brew.timestamp,
         Type: brew.type,
         Label: brew.label || '-',
         Rating: brew.rating !== undefined ? brew.rating : '-'
-      }));
-      console.table(tableData);
+      })));
     }
   } else {
     console.error('Usage: node index.js <log|summary|rate|search> [args]');
