@@ -68,6 +68,10 @@ if (require.main === module) {
   } else if (command === 'rate') {
     const id = args[1];
     const stars = args[2];
+    if (!id || !stars) {
+      console.error('Usage: node index.js rate <id> <stars>');
+      process.exit(1);
+    }
     try {
       const brew = updateBrewRating(id, stars);
       console.log(`Rated brew ${id} as ${brew.rating} stars`);
