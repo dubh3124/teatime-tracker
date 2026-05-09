@@ -24,12 +24,20 @@ describe('Search CLI Command Integration', () => {
   });
 
   test('search command supports --from, --to, --type and displays table', () => {
-    const output = execSync('node index.js search --from=2023-01-01 --to=2023-01-01T23:59:59 --type=tea').toString();
-    
-    expect(output).toContain('tea');
-    expect(output).toContain('Green Tea');
-    expect(output).toContain('5'); // Rating
-    expect(output).not.toContain('Espresso');
-    expect(output).not.toContain('Oolong');
+    try {
+      const output = execSync('node index.js search --from=2023-01-01 --to=2023-01-01T23:59:59 --type=tea').toString();
+      console.log('DEBUG: CLI Process Output:\n', output);
+      
+      expect(output).toContain('tea');
+      expect(output).toContain('Green Tea');
+      expect(output).toContain('5'); // Rating
+      expect(output).not.toContain('Espresso');
+      expect(output).not.toContain('Oolong');
+    } catch (e) {
+      console.error('DEBUG: CLI Process Failed!');
+      if (e.stdout) console.error('STDOUT:', e.stdout.toString());
+      if (e.stderr) console.error('STDERR:', e.stderr.toString());
+      throw e;
+    }
   });
 });
