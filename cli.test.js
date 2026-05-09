@@ -7,7 +7,7 @@ describe('CLI Integration', () => {
   const dbPath = 'brews.json';
 
   beforeEach(() => {
-    const fullPath = path.resolve(__dirname, dbPath);
+    const fullPath = path.resolve(process.cwd(), dbPath);
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
     }

@@ -6,7 +6,8 @@ describe('Search CLI Command Integration', () => {
   const dbPath = 'brews.json';
 
   beforeEach(() => {
-    const fullPath = path.resolve(__dirname, dbPath);
+    const fullPath = path.resolve(process.cwd(), dbPath);
+    console.log('DEBUG: Seeding path ' + fullPath);
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
     }
@@ -20,7 +21,7 @@ describe('Search CLI Command Integration', () => {
   });
 
   afterAll(() => {
-    const fullPath = path.resolve(__dirname, dbPath);
+    const fullPath = path.resolve(process.cwd(), dbPath);
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
     }
