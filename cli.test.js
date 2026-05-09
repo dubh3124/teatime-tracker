@@ -1,9 +1,10 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 const persistence = require('./persistence');
 
 describe('CLI Integration', () => {
-  const dbPath = 'brews.json';
+  const dbPath = path.join(__dirname, 'brews.json');
 
   beforeEach(() => {
     if (fs.existsSync(dbPath)) {
@@ -15,7 +16,7 @@ describe('CLI Integration', () => {
     const output = execSync('node index.js log tea').toString();
     expect(output).toContain('Recorded tea');
     
-    const brews = persistence.loadBrews();
+    const brews = persistence.loadBrews(dbPath);
     expect(brews.length).toBe(1);
     expect(brews[0].type).toBe('tea');
   });

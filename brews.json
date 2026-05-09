@@ -1,7 +1,14 @@
 [
   {
     "type": "tea",
-    "label": "Earl Grey",
-    "timestamp": "2023-10-01T10:00:00.000Z"
+    "timestamp": "2026-05-09T09:31:01.015Z"
+  },
+  {
+    "type": "coffee",
+    "timestamp": "2026-05-09T09:31:01.045Z"
+  },
+  {
+    "type": "coffee",
+    "timestamp": "2026-05-09T09:31:01.068Z"
   }
 ]

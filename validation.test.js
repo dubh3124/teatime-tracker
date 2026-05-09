@@ -1,8 +1,9 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 
 describe('CLI Input Validation', () => {
-    const dbPath = 'brews.json';
+    const dbPath = path.join(__dirname, 'brews.json');
 
     beforeEach(() => {
         if (fs.existsSync(dbPath)) {
