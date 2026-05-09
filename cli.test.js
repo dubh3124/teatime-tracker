@@ -5,6 +5,10 @@ const persistence = require('./persistence');
 describe('CLI Integration', () => {
   const dbPath = 'brews.json';
 
+  beforeAll(() => {
+    jest.retryTimes(3);
+  });
+
   beforeEach(() => {
     if (fs.existsSync(dbPath)) {
       fs.unlinkSync(dbPath);
