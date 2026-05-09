@@ -3,7 +3,7 @@ const fs = require('fs');
 const persistence = require('./persistence');
 
 describe('CLI Rating', () => {
-    const dbPath = 'brews.json';
+    const dbPath = './brews.json';
 
     beforeEach(() => {
         if (fs.existsSync(dbPath)) {
