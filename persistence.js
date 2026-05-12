@@ -76,10 +76,24 @@ function searchHistory(filters = {}, dbPath) {
   });
 }
 
+function exportToCsv(brews) {
+  const header = 'timestamp,type,rating,label';
+  const rows = brews.map(brew => {
+    const timestamp = brew.timestamp || '';
+    const type = brew.type || '';
+    const rating = brew.rating !== undefined ? brew.rating : '';
+    const label = brew.label || '';
+    // simple csv escape (assuming no commas/quotes for now as per label usage)
+    return `${timestamp},${type},${rating},"${label.replace(/"/g, '""')}"`;
+  });
+  return [header, ...rows].join('\n');
+}
+
 module.exports = {
   loadBrews,
   getHistory: loadBrews,
   saveBrew,
   updateBrewRating,
-  searchHistory
+  searchHistory,
+  exportToCsv
 };

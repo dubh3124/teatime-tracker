@@ -120,8 +120,9 @@ if (require.main === module) {
       console.error(error.message);
       process.exit(1);
     }
-  } else if (command === 'search' || command === 'history') {
+  } else if (command === 'search' || command === 'history' || command === 'export') {
     const filters = {};
+    if (command === 'export') filters.format = 'csv';
     for (let i = 1; i < args.length; i++) {
       const arg = args[i];
       if (arg.startsWith('--start-date=') || arg.startsWith('--from=')) filters.startDate = arg.split('=')[1];
@@ -130,9 +131,12 @@ if (require.main === module) {
       else if (arg.startsWith('--query=')) filters.query = arg.split('=')[1];
       else if (arg.startsWith('--rating=')) filters.rating = arg.split('=')[1];
       else if (arg.startsWith('--min-rating=')) filters.minRating = arg.split('=')[1];
+      else if (arg.startsWith('--format=')) filters.format = arg.split('=')[1];
     }
     const results = searchHistory(filters);
-    if (results.length === 0) {
+    if (filters.format === 'csv') {
+      console.log(persistence.exportToCsv(results));
+    } else if (results.length === 0) {
       console.log('No brews found matching criteria.');
     } else {
       console.log('Results:');
