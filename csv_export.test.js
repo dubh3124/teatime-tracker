@@ -33,15 +33,15 @@ describe('CSV Export Integration', () => {
     expect(lines.length).toBe(3); // Header + 2 rows
     expect(lines[0]).toBe('timestamp,type,rating,label');
     
-    // Check content of first data row
+    // Default sort is now date descending. Latest is coffee.
     const row1 = lines[1].split(',');
-    expect(row1[1]).toBe('tea');
-    expect(row1[2]).toBe('5');
+    expect(row1[1]).toBe('coffee');
+    expect(row1[2]).toBe('3');
     
-    // Check content of second data row
+    // Second data row is tea
     const row2 = lines[2].split(',');
-    expect(row2[1]).toBe('coffee');
-    expect(row2[2]).toBe('3');
+    expect(row2[1]).toBe('tea');
+    expect(row2[2]).toBe('5');
   });
 
   test('User can export brew history to CSV using export command', () => {

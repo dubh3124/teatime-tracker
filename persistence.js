@@ -62,7 +62,7 @@ function updateBrewRating(id, rating, dbPath) {
 function searchHistory(filters = {}, dbPath) {
   dbPath = dbPath || getDbPath();
   const brews = loadBrews(dbPath);
-  return brews.filter(brew => {
+  const filteredBrews = brews.filter(brew => {
     if (filters.startDate && brew.timestamp < filters.startDate) return false;
     if (filters.endDate && brew.timestamp > filters.endDate) return false;
     if (filters.type && brew.type !== filters.type) return false;
@@ -74,6 +74,27 @@ function searchHistory(filters = {}, dbPath) {
     if (filters.minRating !== undefined && (brew.rating === undefined || brew.rating < parseInt(filters.minRating, 10))) return false;
     return true;
   });
+
+  const sort = filters.sort;
+  if (sort) {
+    filteredBrews.sort((a, b) => {
+      if (sort === 'rating') {
+        const ratingA = a.rating !== undefined ? a.rating : 0;
+        const ratingB = b.rating !== undefined ? b.rating : 0;
+        return ratingA - ratingB;
+      } else if (sort === 'type') {
+        return a.type.localeCompare(b.type);
+      } else if (sort === 'date') {
+        return b.timestamp.localeCompare(a.timestamp);
+      }
+      return 0;
+    });
+  } else {
+    // Default: descending order by timestamp
+    filteredBrews.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+  }
+
+  return filteredBrews;
 }
 
 function exportToCsv(brews) {

@@ -132,6 +132,7 @@ if (require.main === module) {
       else if (arg.startsWith('--rating=')) filters.rating = arg.split('=')[1];
       else if (arg.startsWith('--min-rating=')) filters.minRating = arg.split('=')[1];
       else if (arg.startsWith('--format=')) filters.format = arg.split('=')[1];
+      else if (arg.startsWith('--sort=')) filters.sort = arg.split('=')[1];
     }
     const results = searchHistory(filters);
     if (filters.format === 'csv') {
