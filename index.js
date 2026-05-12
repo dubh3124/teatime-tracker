@@ -96,6 +96,8 @@ if (require.main === module) {
       else if (arg.startsWith('--end-date=') || arg.startsWith('--to=')) filters.endDate = arg.split('=')[1];
       else if (arg.startsWith('--type=')) filters.type = arg.split('=')[1];
       else if (arg.startsWith('--query=')) filters.query = arg.split('=')[1];
+      else if (arg.startsWith('--rating=')) filters.rating = arg.split('=')[1];
+      else if (arg.startsWith('--min-rating=')) filters.minRating = arg.split('=')[1];
     }
     const results = searchHistory(filters);
     if (results.length === 0) {

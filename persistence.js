@@ -70,6 +70,8 @@ function searchHistory(filters = {}, dbPath) {
       const label = brew.label || '';
       if (!label.toLowerCase().includes(filters.query.toLowerCase())) return false;
     }
+    if (filters.rating !== undefined && brew.rating !== parseInt(filters.rating, 10)) return false;
+    if (filters.minRating !== undefined && (brew.rating === undefined || brew.rating < parseInt(filters.minRating, 10))) return false;
     return true;
   });
 }
