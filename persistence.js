@@ -83,7 +83,7 @@ function exportToCsv(brews) {
     const type = brew.type || '';
     const rating = brew.rating !== undefined ? brew.rating : '';
     const label = brew.label || '';
-    // simple csv escape (assuming no commans/quotes for now as per label usage)
+    // simple csv escape (assuming no commas/quotes for now as per label usage)
     return `${timestamp},${type},${rating},"${label.replace(/"/g, '""')}"`;
   });
   return [header, ...rows].join('\n');
