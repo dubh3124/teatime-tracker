@@ -44,6 +44,19 @@ describe('CSV Export Integration', () => {
     expect(row2[2]).toBe('3');
   });
 
+  test('User can export brew history to CSV using export command', () => {
+    // Record some brews
+    execSync('node index.js log tea 5');
+    execSync('node index.js log coffee 3');
+
+    // Run export command
+    const output = execSync('node index.js export').toString();
+
+    const lines = output.trim().split('\n');
+    expect(lines[0]).toBe('timestamp,type,rating,label');
+    expect(lines.length).toBe(3);
+  });
+
   test('User can export brew history to CSV using --format=csv with filters', () => {
     // Record some brews
     execSync('node index.js log tea 5');
