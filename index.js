@@ -48,6 +48,36 @@ const getDailySummary = () => {
     .join(', ');
 };
 
+const getRatingStats = () => {
+  const history = persistence.getHistory();
+  if (history.length === 0) {
+    return 'No ratings recorded.';
+  }
+
+  const statsMap = {};
+  history.forEach(brew => {
+    if (!statsMap[brew.type]) {
+      statsMap[brew.type] = { sum: 0, count: 0 };
+    }
+    if (brew.rating !== undefined) {
+      statsMap[brew.type].sum += brew.rating;
+      statsMap[brew.type].count += 1;
+    }
+  });
+
+  const types = Object.keys(statsMap).sort();
+  return types
+    .map(type => {
+      const stats = statsMap[type];
+      if (stats.count === 0) {
+        return `${type}: No ratings`;
+      }
+      const avg = (stats.sum / stats.count).toFixed(2);
+      return `${type}: ${avg} (${stats.count} rating${stats.count === 1 ? '' : 's'})`;
+    })
+    .join('\n');
+};
+
 const updateBrewRating = (id, rating) => {
   return persistence.updateBrewRating(id, rating);
 };
@@ -56,7 +86,7 @@ const searchHistory = (filters) => {
   return persistence.searchHistory(filters);
 };
 
-module.exports = { logBrew, getBrews, getDailySummary, updateBrewRating, searchHistory };
+module.exports = { logBrew, getBrews, getDailySummary, getRatingStats, updateBrewRating, searchHistory };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
@@ -74,6 +104,8 @@ if (require.main === module) {
     }
   } else if (command === 'summary') {
     console.log(getDailySummary());
+  } else if (command === 'stats') {
+    console.log(getRatingStats());
   } else if (command === 'rate') {
     const id = args[1];
     const stars = args[2];
