@@ -180,7 +180,7 @@ Show rating statistics. Displays average rating per brew type.`);
 
 Verify data integrity. Checks for invalid ratings in brew history.`);
     }
-    return;
+    process.exit(0);
   }
 
   // Startup verification: check existing history for invalid ratings
