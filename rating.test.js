@@ -39,7 +39,7 @@ describe('CLI Rating', () => {
             execSync(`BREW_DB=${dbPath} node index.js rate "${brewId}" 4.5`, { stdio: 'pipe' });
             throw new Error('Should have failed for non-integer rating');
         } catch (error) {
-            expect(error.stderr.toString()).toContain('Rating must be an integer between 1 and 5');
+            expect(error.stderr.toString()).toContain('Rating must be a whole number between 1 and 5');
         }
     });
 
@@ -52,7 +52,7 @@ describe('CLI Rating', () => {
             execSync(`BREW_DB=${dbPath} node index.js rate "${brewId}" 6`, { stdio: 'pipe' });
             throw new Error('Should have failed for rating > 5');
         } catch (error) {
-            expect(error.stderr.toString()).toContain('Rating must be an integer between 1 and 5');
+            expect(error.stderr.toString()).toContain('Rating must be at most 5');
         }
     });
 

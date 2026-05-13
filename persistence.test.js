@@ -54,8 +54,8 @@ describe('Persistence Layer', () => {
     const brewHigh = { type: 'Earl Grey', timestamp: new Date().toISOString(), rating: 6 };
     const brewInvalid = { type: 'Earl Grey', timestamp: new Date().toISOString(), rating: 'invalid' };
 
-    expect(() => saveBrew(brewLow, testDbPath)).toThrow('Rating must be an integer between 1 and 5');
-    expect(() => saveBrew(brewHigh, testDbPath)).toThrow('Rating must be an integer between 1 and 5');
-    expect(() => saveBrew(brewInvalid, testDbPath)).toThrow('Rating must be an integer between 1 and 5');
+    expect(() => saveBrew(brewLow, testDbPath)).toThrow('Rating must be at least 1');
+    expect(() => saveBrew(brewHigh, testDbPath)).toThrow('Rating must be at most 5');
+    expect(() => saveBrew(brewInvalid, testDbPath)).toThrow('Rating must be a numeric value');
   });
 });

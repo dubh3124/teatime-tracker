@@ -97,6 +97,14 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const command = args[0];
 
+  // Startup verification: check existing history for invalid ratings
+  if (command !== 'verify') {
+    const startupReport = persistence.verifyHistory();
+    if (!startupReport.valid) {
+      console.error(`Warning: ${startupReport.issues.length} brew(s) in history have invalid ratings. Run 'node index.js verify' for details.`);
+    }
+  }
+
   if (command === 'log') {
     const type = args[1];
     const rating = args[2];
