@@ -106,6 +106,83 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const command = args[0];
 
+  // --help / -h handling
+  const isHelpRequest = command === '--help' || command === '-h' || args.includes('--help') || args.includes('-h');
+  if (isHelpRequest) {
+    if (command === '--help' || command === '-h' || !command) {
+      console.log(`Usage: node index.js <command> [options]
+
+Commands:
+  log <type> [rating]     Record a brew (tea or coffee) with optional rating (integer 1-5)
+  summary                 Show daily brew summary
+  rate <id> <stars>       Rate a brew (1-5 stars)
+  search [filters]        Search brews with optional filters
+  history [filters]       Show brew history (alias for search)
+  delete <id> [--yes|-y]  Delete a brew entry
+  stats                   Show rating statistics
+  verify                  Verify data integrity`);
+    } else if (command === 'log') {
+      console.log(`Usage: node index.js log <type> [rating]
+
+Record a new brew.
+
+Arguments:
+  type     Brew type (tea or coffee)
+  rating   Optional rating (integer 1-5)`);
+    } else if (command === 'rate') {
+      console.log(`Usage: node index.js rate <id> <stars>
+
+Rate a brew.
+
+Arguments:
+  id       Brew ID to rate
+  stars    Rating stars (integer 1-5)`);
+    } else if (command === 'search') {
+      console.log(`Usage: node index.js search [filters]
+
+Search brew history with optional filters.
+
+Filters:
+  --from=DATE       Start date filter
+  --to=DATE         End date filter
+  --type=TYPE       Filter by type (tea or coffee)
+  --query=TEXT      Search query text
+  --rating=N        Filter by exact rating (integer 1-5)
+  --min-rating=N    Filter by minimum rating (integer 1-5)
+  --sort=FIELD      Sort results (e.g., timestamp, rating)`);
+    } else if (command === 'history') {
+      console.log(`Usage: node index.js history [filters]
+
+Show brew history (alias for search).
+
+Filters:
+  --from=DATE       Start date filter
+  --to=DATE         End date filter
+  --type=TYPE       Filter by type (tea or coffee)`);
+    } else if (command === 'delete') {
+      console.log(`Usage: node index.js delete <id> [--yes|-y]
+
+Delete a brew entry.
+
+Arguments:
+  id         Brew ID to delete
+  --yes, -y  Confirm deletion (required)`);
+    } else if (command === 'summary') {
+      console.log(`Usage: node index.js summary
+
+Show daily brew summary. Displays the count of each brew type recorded today.`);
+    } else if (command === 'stats') {
+      console.log(`Usage: node index.js stats
+
+Show rating statistics. Displays average rating per brew type.`);
+    } else if (command === 'verify') {
+      console.log(`Usage: node index.js verify
+
+Verify data integrity. Checks for invalid ratings in brew history.`);
+    }
+    return;
+  }
+
   // Startup verification: check existing history for invalid ratings
   if (command !== 'verify') {
     const startupReport = persistence.verifyHistory();
