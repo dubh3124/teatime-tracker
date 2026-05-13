@@ -126,9 +126,14 @@ describe('Verify Command - History Integrity Check', () => {
     ];
     fs.writeFileSync(dbPath, JSON.stringify(badData));
 
-    const output = execSync(`BREW_DB=${dbPath} node index.js verify`, { stdio: 'pipe' }).toString();
-    expect(output).toContain('Bad Brew');
-    expect(output.toLowerCase()).toMatch(/invalid|issue|problem|error|found/);
+    try {
+      execSync(`BREW_DB=${dbPath} node index.js verify`, { stdio: 'pipe' });
+      throw new Error('Should have exited with code 1');
+    } catch (error) {
+      const output = error.stderr ? error.stderr.toString() : error.stdout.toString();
+      expect(output).toContain('Bad Brew');
+      expect(output.toLowerCase()).toMatch(/invalid|issue|problem|error|found/);
+    }
   });
 
   test('verify command should detect brews with ratings above 5', () => {
@@ -137,9 +142,14 @@ describe('Verify Command - History Integrity Check', () => {
     ];
     fs.writeFileSync(dbPath, JSON.stringify(badData));
 
-    const output = execSync(`BREW_DB=${dbPath} node index.js verify`, { stdio: 'pipe' }).toString();
-    expect(output).toContain('Overrated');
-    expect(output.toLowerCase()).toMatch(/invalid|issue|problem|error|found/);
+    try {
+      execSync(`BREW_DB=${dbPath} node index.js verify`, { stdio: 'pipe' });
+      throw new Error('Should have exited with code 1');
+    } catch (error) {
+      const output = error.stderr ? error.stderr.toString() : error.stdout.toString();
+      expect(output).toContain('Overrated');
+      expect(output.toLowerCase()).toMatch(/invalid|issue|problem|error|found/);
+    }
   });
 
   test('verify command should detect non-integer ratings in existing data', () => {
@@ -148,9 +158,14 @@ describe('Verify Command - History Integrity Check', () => {
     ];
     fs.writeFileSync(dbPath, JSON.stringify(badData));
 
-    const output = execSync(`BREW_DB=${dbPath} node index.js verify`, { stdio: 'pipe' }).toString();
-    expect(output).toContain('Fractional');
-    expect(output.toLowerCase()).toMatch(/invalid|issue|problem|error|found/);
+    try {
+      execSync(`BREW_DB=${dbPath} node index.js verify`, { stdio: 'pipe' });
+      throw new Error('Should have exited with code 1');
+    } catch (error) {
+      const output = error.stderr ? error.stderr.toString() : error.stdout.toString();
+      expect(output).toContain('Fractional');
+      expect(output.toLowerCase()).toMatch(/invalid|issue|problem|error|found/);
+    }
   });
 
   test('verify command should exit with code 0 when no issues found', () => {
