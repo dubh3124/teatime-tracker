@@ -15,25 +15,26 @@ const RATING_MAX = 5;
  */
 function validateRating(rating) {
   if (rating === undefined || rating === null) {
-    return { valid: false, message: 'Rating is required' };
+    return { valid: false, message: 'Rating is required. Rating must be an integer between 1 and 5' };
   }
 
   const num = typeof rating === 'string' ? Number(rating) : rating;
 
   if (typeof num !== 'number' || isNaN(num)) {
-    return { valid: false, message: 'Rating must be a numeric value' };
+    const display = typeof rating === 'string' ? `'${rating}'` : String(rating);
+    return { valid: false, message: `Rating ${display} is not a number. Rating must be an integer between 1 and 5` };
   }
 
   if (!Number.isInteger(num)) {
-    return { valid: false, message: 'Rating must be a whole number between 1 and 5' };
-  }
-
-  if (num < RATING_MIN) {
-    return { valid: false, message: 'Rating must be at least 1' };
+    return { valid: false, message: `Rating ${num} is not a whole number. Rating must be an integer between 1 and 5` };
   }
 
   if (num > RATING_MAX) {
-    return { valid: false, message: 'Rating must be at most 5' };
+    return { valid: false, message: `Rating ${num} is too high. Rating must be an integer between 1 and 5` };
+  }
+
+  if (num < RATING_MIN) {
+    return { valid: false, message: `Rating ${num} is too low. Rating must be an integer between 1 and 5` };
   }
 
   return { valid: true };
