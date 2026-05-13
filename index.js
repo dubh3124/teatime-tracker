@@ -86,7 +86,11 @@ const searchHistory = (filters) => {
   return persistence.searchHistory(filters);
 };
 
-module.exports = { logBrew, getBrews, getDailySummary, getRatingStats, updateBrewRating, searchHistory };
+const deleteBrew = (id) => {
+  return persistence.deleteBrew(id);
+};
+
+module.exports = { logBrew, getBrews, getDailySummary, getRatingStats, updateBrewRating, searchHistory, deleteBrew };
 
 if (require.main === module) {
   const args = process.argv.slice(2);
@@ -145,8 +149,26 @@ if (require.main === module) {
         console.log(`[${brew.timestamp}] ${brew.type} (Rating: ${brew.rating !== undefined ? brew.rating : '-'}): ${brew.label || '-'}`);
       });
     }
+  } else if (command === 'delete') {
+    const id = args[1];
+    const confirmed = args.includes('--yes') || args.includes('-y');
+    if (!id) {
+      console.error('Usage: node index.js delete <id> [--yes|-y]');
+      process.exit(1);
+    }
+    if (!confirmed) {
+      console.error('Confirmation required. Use --yes or -y to confirm deletion.');
+      process.exit(1);
+    }
+    try {
+      persistence.deleteBrew(id);
+      console.log(`Deleted brew ${id}`);
+    } catch (error) {
+      console.error(error.message);
+      process.exit(1);
+    }
   } else {
-    console.error('Usage: node index.js <log|summary|rate|search|history> [args]');
+    console.error('Usage: node index.js <log|summary|rate|search|history|delete> [args]');
     process.exit(1);
   }
 }
