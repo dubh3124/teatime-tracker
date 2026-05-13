@@ -1,8 +1,10 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
-const DB_PATH = path.join(__dirname, 'brews.json');
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'teatime-history-search-'));
+const DB_PATH = path.join(tmpDir, 'brews.json');
 
 describe('History Search CLI', () => {
     beforeEach(() => {
@@ -15,15 +17,13 @@ describe('History Search CLI', () => {
     });
 
     afterAll(() => {
-        if (fs.existsSync(DB_PATH)) {
-            fs.unlinkSync(DB_PATH);
-        }
+        fs.rmSync(tmpDir, { recursive: true, force: true });
     });
 
     test('supports --from, --to, and --type flags', () => {
         // Based on AC, let's aim for 'history' command as requested.
         
-        const output = execSync('node index.js history --from=2023-01-01 --to=2023-01-02 --type=tea').toString();
+        const output = execSync(`BREW_DB=${DB_PATH} node index.js history --from=2023-01-01 --to=2023-01-02 --type=tea`).toString();
         
         expect(output).toContain('2023-01-01');
         expect(output).toContain('tea');
@@ -35,7 +35,7 @@ describe('History Search CLI', () => {
     });
 
     test('history command displays table including rating', () => {
-        const output = execSync('node index.js history --type=coffee').toString();
+        const output = execSync(`BREW_DB=${DB_PATH} node index.js history --type=coffee`).toString();
         expect(output).toContain('Espresso');
         expect(output).toContain('4');
     });

@@ -1,8 +1,10 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
-const DB_PATH = path.join(__dirname, 'brews.json');
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'teatime-sorting-'));
+const DB_PATH = path.join(tmpDir, 'brews.json');
 
 describe('History Sorting CLI', () => {
     beforeEach(() => {
@@ -15,13 +17,11 @@ describe('History Sorting CLI', () => {
     });
 
     afterAll(() => {
-        if (fs.existsSync(DB_PATH)) {
-            fs.unlinkSync(DB_PATH);
-        }
+        fs.rmSync(tmpDir, { recursive: true, force: true });
     });
 
     test('default sort is date descending', () => {
-        const output = execSync('node index.js history').toString();
+        const output = execSync(`BREW_DB=${DB_PATH} node index.js history`).toString();
         const lines = output.split('\n').filter(line => line.includes('[2023-01-'));
         
         // Expected order: 2023-01-03, 2023-01-02, 2023-01-01
@@ -35,7 +35,7 @@ describe('History Sorting CLI', () => {
         // Usually sort flags imply ascending or have a default. Let's assume ascending for rating/type if not specified, 
         // but the AC says "Default sort is date descending".
         
-        const output = execSync('node index.js history --sort=rating').toString();
+        const output = execSync(`BREW_DB=${DB_PATH} node index.js history --sort=rating`).toString();
         const lines = output.split('\n').filter(line => line.includes('[2023-01-'));
         
         // Ratings: 3 (Espresso), 4 (Green Tea), 5 (Earl Grey)
@@ -45,7 +45,7 @@ describe('History Sorting CLI', () => {
     });
 
     test('sorts by type', () => {
-        const output = execSync('node index.js history --sort=type').toString();
+        const output = execSync(`BREW_DB=${DB_PATH} node index.js history --sort=type`).toString();
         const lines = output.split('\n').filter(line => line.includes('[2023-01-'));
         
         // Types: coffee, tea, tea
@@ -55,7 +55,7 @@ describe('History Sorting CLI', () => {
     });
 
     test('sorts by date explicitly', () => {
-        const output = execSync('node index.js history --sort=date').toString();
+        const output = execSync(`BREW_DB=${DB_PATH} node index.js history --sort=date`).toString();
         const lines = output.split('\n').filter(line => line.includes('[2023-01-'));
         
         // Default for date is descending as per AC
