@@ -74,6 +74,34 @@ describe('Centralized Rating Validation', () => {
       expect(result.message.length).toBeGreaterThan(10);
       expect(result.message).not.toMatch(/^\s*$/); // not blank
     });
+
+    test('should produce distinct, context-specific error messages for different failure modes', () => {
+      const undefinedResult = validation.validateRating(undefined);
+      const nullResult = validation.validateRating(null);
+      const nonNumericResult = validation.validateRating('bad');
+      const floatResult = validation.validateRating(4.5);
+      const tooLowResult = validation.validateRating(0);
+      const tooHighResult = validation.validateRating(6);
+
+      // Each failure type should have a distinct message tailored to the specific problem
+      const messages = new Set([
+        undefinedResult.message,
+        nullResult.message,
+        nonNumericResult.message,
+        floatResult.message,
+        tooLowResult.message,
+        tooHighResult.message
+      ]);
+
+      // At least 3 distinct messages among 6 failure modes
+      expect(messages.size).toBeGreaterThanOrEqual(3);
+
+      // Messages must reference what the user got wrong
+      expect(tooHighResult.message.toLowerCase()).toMatch(/5/);
+      expect(tooLowResult.message.toLowerCase()).toMatch(/1/);
+      expect(floatResult.message.toLowerCase()).toMatch(/whole|integer/);
+      expect(nonNumericResult.message.toLowerCase()).toMatch(/number|numeric/);
+    });
   });
 
   describe('isValidRating', () => {
@@ -191,6 +219,58 @@ describe('Verify Command - History Integrity Check', () => {
     } catch (error) {
       expect(error.status).toBe(1);
     }
+  });
+});
+
+// Acceptance Criterion 3 (extended): Startup verification checks history on load
+describe('Startup History Verification', () => {
+  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'teatime-startup-'));
+  const dbPath = path.join(tmpDir, 'brews.json');
+
+  afterAll(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  test('any command should warn on startup if history contains invalid ratings', () => {
+    const badData = [
+      { type: 'tea', label: 'Bad', rating: 0, timestamp: '2023-01-01T10:00:00.000Z' },
+      { type: 'coffee', label: 'Ok', rating: 4, timestamp: '2023-01-02T10:00:00.000Z' }
+    ];
+    fs.writeFileSync(dbPath, JSON.stringify(badData));
+
+    // Running any command (summary) should detect and warn about invalid data on startup
+    try {
+      execSync(`BREW_DB=${dbPath} node index.js summary`, { stdio: 'pipe' });
+    } catch (_) {
+      // May or may not exit with error
+    }
+
+    // The startup check writes to stderr when invalid data is found
+    // Use a separate call to capture stderr
+    let stderrOutput = '';
+    try {
+      execSync(`BREW_DB=${dbPath} node index.js summary`, { stdio: 'pipe', stderr: 'pipe' });
+    } catch (error) {
+      stderrOutput = error.stderr ? error.stderr.toString() : '';
+    }
+
+    // Capture via a different mechanism - redirect stderr
+    const result = execSync(`BREW_DB=${dbPath} node index.js summary 2>&1`, { stdio: 'pipe' });
+    const combined = result.toString().toLowerCase();
+    // Startup verification should detect invalid data and warn about it
+    expect(combined).toMatch(/invalid|issue|warning|bad|corrupted|found/);
+  });
+
+  test('commands should not warn on startup when all ratings are valid', () => {
+    const cleanData = [
+      { type: 'tea', label: 'Green', rating: 5, timestamp: '2023-01-01T10:00:00.000Z' },
+      { type: 'coffee', label: 'Espresso', rating: 3, timestamp: '2023-01-02T10:00:00.000Z' }
+    ];
+    fs.writeFileSync(dbPath, JSON.stringify(cleanData));
+
+    const output = execSync(`BREW_DB=${dbPath} node index.js summary 2>&1`, { stdio: 'pipe' }).toString().toLowerCase();
+    // When data is clean, there should be no warnings about invalid ratings
+    expect(output).not.toMatch(/invalid|corrupted|bad rating/);
   });
 });
 
