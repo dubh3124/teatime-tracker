@@ -110,11 +110,29 @@ function exportToCsv(brews) {
   return [header, ...rows].join('\n');
 }
 
+function deleteBrew(id, dbPath) {
+  dbPath = dbPath || getDbPath();
+  const brews = loadBrews(dbPath);
+  const index = brews.findIndex(b => b.timestamp === id);
+  if (index === -1) {
+    throw new Error(`Brew with ID ${id} not found`);
+  }
+  const deleted = brews.splice(index, 1)[0];
+  try {
+    fs.writeFileSync(dbPath, JSON.stringify(brews, null, 2), 'utf8');
+    return deleted;
+  } catch (error) {
+    console.error('Error deleting brew:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   loadBrews,
   getHistory: loadBrews,
   saveBrew,
   updateBrewRating,
+  deleteBrew,
   searchHistory,
   exportToCsv
 };
