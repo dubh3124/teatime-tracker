@@ -94,6 +94,15 @@ const deleteBrew = (id) => {
 module.exports = { logBrew, getBrews, getDailySummary, getRatingStats, updateBrewRating, searchHistory, deleteBrew };
 
 if (require.main === module) {
+  // Startup verification: check data integrity before running any command
+  const startupReport = persistence.verifyHistory();
+  if (!startupReport.valid) {
+    console.error(`WARNING: Found ${startupReport.issues.length} brew(s) with invalid ratings:`);
+    startupReport.issues.forEach(issue => {
+      console.error(`  [${issue.id}] ${issue.type} ${issue.label || ''} rating=${issue.rating}: ${issue.message}`);
+    });
+  }
+
   const args = process.argv.slice(2);
   const command = args[0];
 
