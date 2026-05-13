@@ -1,4 +1,5 @@
 const persistence = require('./persistence');
+const { validateRating } = require('./validation');
 
 const logBrew = (type, label, rating) => {
   if (type !== 'tea' && type !== 'coffee') {
@@ -10,11 +11,11 @@ const logBrew = (type, label, rating) => {
     timestamp: new Date().toISOString()
   };
   if (rating !== undefined) {
-    const stars = parseInt(rating, 10);
-    if (isNaN(stars) || stars < 1 || stars > 5) {
-      throw new Error('Rating must be an integer between 1 and 5');
+    const result = validateRating(rating);
+    if (!result.valid) {
+      throw new Error(result.message);
     }
-    brew.rating = stars;
+    brew.rating = parseInt(rating, 10);
   }
   persistence.saveBrew(brew);
   return brew;
@@ -165,6 +166,17 @@ if (require.main === module) {
       console.log(`Deleted brew ${id}`);
     } catch (error) {
       console.error(error.message);
+      process.exit(1);
+    }
+  } else if (command === 'verify') {
+    const report = persistence.verifyHistory();
+    if (report.valid) {
+      console.log('All brews have valid ratings.');
+    } else {
+      console.error(`Found ${report.issues.length} brew(s) with invalid ratings:`);
+      report.issues.forEach(issue => {
+        console.error(`  [${issue.id}] ${issue.type} ${issue.label || ''} rating=${issue.rating}: ${issue.message}`);
+      });
       process.exit(1);
     }
   } else {

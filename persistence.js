@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { validateRating } = require('./validation');
 
 const DEFAULT_DB_PATH = path.resolve(__dirname, 'brews.json');
 
@@ -24,8 +25,9 @@ function loadBrews(dbPath) {
 function saveBrew(brew, dbPath) {
   dbPath = dbPath || getDbPath();
   if (brew.rating !== undefined) {
-    if (typeof brew.rating !== 'number' || !Number.isInteger(brew.rating) || brew.rating < 1 || brew.rating > 5) {
-      throw new Error('Rating must be an integer between 1 and 5');
+    const result = validateRating(brew.rating);
+    if (!result.valid) {
+      throw new Error(result.message);
     }
   }
   const brews = loadBrews(dbPath);
@@ -39,11 +41,11 @@ function saveBrew(brew, dbPath) {
 
 function updateBrewRating(id, rating, dbPath) {
   dbPath = dbPath || getDbPath();
-  const stars = parseInt(rating, 10);
-  
-  if (isNaN(stars) || stars.toString() !== rating.toString() || stars < 1 || stars > 5) {
-    throw new Error('Rating must be an integer between 1 and 5');
+  const result = validateRating(rating);
+  if (!result.valid) {
+    throw new Error(result.message);
   }
+  const stars = parseInt(rating, 10);
   const brews = loadBrews(dbPath);
   const index = brews.findIndex(b => b.timestamp === id);
   if (index === -1) {
@@ -97,6 +99,34 @@ function searchHistory(filters = {}, dbPath) {
   return filteredBrews;
 }
 
+function verifyHistory(dbPath) {
+  dbPath = dbPath || getDbPath();
+  const brews = loadBrews(dbPath);
+  const issues = [];
+
+  brews.forEach((brew, index) => {
+    if (brew.rating !== undefined) {
+      const result = validateRating(brew.rating);
+      if (!result.valid) {
+        issues.push({
+          index,
+          id: brew.timestamp,
+          type: brew.type,
+          label: brew.label,
+          rating: brew.rating,
+          message: result.message
+        });
+      }
+    }
+  });
+
+  return {
+    total: brews.length,
+    issues,
+    valid: issues.length === 0
+  };
+}
+
 function exportToCsv(brews) {
   const header = 'timestamp,type,rating,label';
   const rows = brews.map(brew => {
@@ -134,5 +164,6 @@ module.exports = {
   updateBrewRating,
   deleteBrew,
   searchHistory,
-  exportToCsv
+  exportToCsv,
+  verifyHistory
 };
